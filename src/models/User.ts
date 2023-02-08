@@ -18,8 +18,6 @@ export class User{
          this.id=newId
     }
 
-
-
     public getName():string{
         return this.name
     }
@@ -27,16 +25,12 @@ export class User{
         this.id=newName
    }
 
-
-
    public getEmail():string{
         return this.email
     }
    public setEmail(newEmail:string):void{
         this.id=newEmail
     }
-
-
 
     public getPassword():string{
         return this.password
