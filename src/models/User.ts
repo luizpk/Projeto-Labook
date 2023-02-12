@@ -1,7 +1,8 @@
-import { ENUM } from "../Types"
+import {ENUM} from '../types';
 
 
 export class User{
+    
     constructor(
         private id: string,
         private name: string,
@@ -14,9 +15,7 @@ export class User{
     public getId():string{
         return this.id
     }
-    public setId(newId:string):void{
-         this.id=newId
-    }
+   
 
     public getName():string{
         return this.name
@@ -51,8 +50,5 @@ public getCreatedAt(): string {
     return this.createdAt
 }
 
-public setCreatedAt(newCreatedAt: string): void {
-    this.createdAt = newCreatedAt
-}
 
 }
