@@ -24,3 +24,9 @@ export type ENUM = {
     admin: "ADMIN",
     user: "USER"
 }
+
+export interface EditedPost {
+    content: string,
+    likes: boolean,
+    dislikes: boolean
+}

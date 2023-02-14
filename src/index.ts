@@ -1,10 +1,12 @@
 
 import express, {Request, Response} from 'express';
 import cors from 'cors';
-import { db } from './database/knex';
-import { TPostsDB, TUsersDB } from './types'
+import { BaseDatabase } from './database/BaseDatabase';
+import { EditedPost, TPostsDB, TUsersDB } from './types'
 import { Post } from './models/Post'
 import { User } from './models/User';
+import { UserDatabase } from './database/UserDatabase';
+import { PostDatabase } from './database/PostDatabase';
 
 const app = express();
 
@@ -176,23 +178,16 @@ app.get('/ping', (req: Request, res: Response) => {
 
 // ***** POSTS *****
 
-// createPost
+// getPosts
 
 app.get("/posts", async (req: Request, res: Response) => {
   try {
-      const q = req.query.q
+    const q = req.query.q  as string | undefined
 
-      let postsDB
+    const postDatabase = new PostDatabase()
+    const postsDB = await postDatabase.findPosts(q)
 
-      if (q) {
-          const result: TPostsDB[] = await db("posts").where("creator_id", "content", `%${q}%`)
-          postsDB = result
-      } else {
-          const result: TPostsDB[] = await db("posts")
-          postsDB = result
-      }
-
-      const posts: Post[] = postsDB.map((postDB) => new Post(
+    const posts: Post[] = postsDB.map((postDB) => new Post(
           postDB.id,
           postDB.creator_id,
           postDB.content,
@@ -276,9 +271,12 @@ app.post("/posts", async (req: Request, res: Response) => {
           updated_at: newPost.getUpdated_at()
       }
 
-      await db("posts").insert(newPostDB)
+      const userDatabase = new PostDatabase()
+      const userDBExist = await userDatabase.findUserById(creator_id)
 
-      res.status(201).send(newPost)
+      PostDatabase.insertPost(newPostDB) //**** */
+
+            res.status(201).send(newPost)
   } catch (error) {
       console.log(error)
 
@@ -293,3 +291,118 @@ app.post("/posts", async (req: Request, res: Response) => {
       }
   }
 })
+
+// ***** putPost *****
+
+app.put("/posts/:id", async (req: Request, res: Response) => {
+  try {
+
+      const idPostEdit = req.params.id
+
+      const { id, creator_id, content, likes, dislikes, created_at } = req.body 
+
+      const postDatabase = new PostDatabase()
+
+      if (idPostEdit[0] !== "p") {
+        res.status(400);
+        throw new Error("'id' deve iniciar com a letra 'p'");
+    }
+
+    const postDBExist = await postDatabase.findPostById(idPostEdit)
+
+    
+
+    if (content !== undefined) {
+        if (typeof content !== "string") {
+            res.status(400);
+            throw new Error("'content' deve ser uma string");
+        }
+    }
+
+    if (!postDBExist) {
+      res.status(404)
+      throw new Error("post não encontrado")
+  }
+
+    if( likes !== undefined) {
+        if (typeof likes !== "boolean") {
+            res.status(400)
+            throw new Error("'likes' deve ser um bolean")
+        }
+    }
+   
+    if(dislikes !== undefined) {
+        if (typeof dislikes !== "boolean") {
+            res.status(400)
+             throw new Error("'dislikes' deve ser um bolean")
+        }
+     }
+   
+    const newPost = new Post(
+        postDBExist.id,
+        postDBExist.creator_id,
+        postDBExist.content,
+        postDBExist.likes,
+        postDBExist.dislikes,
+        postDBExist.created_at,
+        new Date().toISOString()
+    )
+
+    const newPostDB: EditedPost = {
+        content: newPost.getContent(),
+        likes: newPost.getLikes(),
+        dislikes: newPost.getDislikes()
+    }
+
+    postDatabase.editPost(newPostDB, idPostEdit)
+
+    res.status(200).send("post atualizado com sucesso")
+
+
+}catch (error) {
+  console.log(error)
+
+  if (req.statusCode === 200) {
+      res.status(500)
+  }
+
+  if (error instanceof Error) {
+      res.send(error.message)
+  } else {
+      res.send("Erro inesperado")
+  }
+}
+})
+
+// ***** deletePost *****
+
+app.delete("/posts/:id", async (req: Request, res: Response) => {
+  try {
+
+      const idToDelete = req.params.id
+
+      const postDatabase = new PostDatabase()
+      const postExist = await postDatabase.findPostById(idToDelete)
+
+      if (!postExist) {
+          res.status(404)
+          throw new Error("post não encontrado")
+      }
+
+      postDatabase.deletePost(idToDelete)
+      res.status(200).send("post deletado com sucesso")
+      
+  } catch (error) {
+      console.log(error)
+
+      if (req.statusCode === 200) {
+          res.status(500)
+      }
+
+      if (error instanceof Error) {
+          res.send(error.message)
+      } else {
+          res.send("Erro inesperado")
+      }
+  }
+}) 
