@@ -14,7 +14,7 @@ export class PostDatabase extends BaseDatabase {
         if (q) {
             const result: TPostsDB[] = await BaseDatabase
                 .connection(PostDatabase.TABLE_POST)
-                .where("id","content", "LIKE", `%${q}%`)
+                .where("content", "LIKE", `%${q}%`)
             postsDB = result
         } else {
             const result: TPostsDB[] = await BaseDatabase
