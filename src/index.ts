@@ -1,10 +1,12 @@
 
 import express, {Request, Response} from 'express';
 import cors from 'cors';
-import { db } from './database/knex';
+import { BaseDatabase } from './database/BaseDatabase';
 import { TPostsDB, TUsersDB } from './types'
 import { Post } from './models/Post'
 import { User } from './models/User';
+import { UserDatabase } from './database/UserDatabase';
+import { PostDatabase } from './database/PostDatabase';
 
 const app = express();
 
@@ -180,19 +182,12 @@ app.get('/ping', (req: Request, res: Response) => {
 
 app.get("/posts", async (req: Request, res: Response) => {
   try {
-      const q = req.query.q
+    const q = req.query.q  as string | undefined
 
-      let postsDB
+    const postDatabase = new PostDatabase()
+    const postsDB = await postDatabase.findPosts(q)
 
-      if (q) {
-          const result: TPostsDB[] = await db("posts").where("creator_id", "content", `%${q}%`)
-          postsDB = result
-      } else {
-          const result: TPostsDB[] = await db("posts")
-          postsDB = result
-      }
-
-      const posts: Post[] = postsDB.map((postDB) => new Post(
+    const posts: Post[] = postsDB.map((postDB) => new Post(
           postDB.id,
           postDB.creator_id,
           postDB.content,
@@ -292,4 +287,29 @@ app.post("/posts", async (req: Request, res: Response) => {
           res.send("Erro inesperado")
       }
   }
+})
+
+// ***** putPost *****
+
+app.put("/posts/:id", async (req: Request, res: Response) => {
+  try {
+      const idPostEdit = req.params.id
+
+      const { id, creator_id, content, likes, dislikes, created_at } = req.body 
+
+
+
+}catch (error) {
+  console.log(error)
+
+  if (req.statusCode === 200) {
+      res.status(500)
+  }
+
+  if (error instanceof Error) {
+      res.send(error.message)
+  } else {
+      res.send("Erro inesperado")
+  }
+}
 })

@@ -9,7 +9,7 @@ export class User{
         private email: string,
         private password: string,
         private role: ENUM,
-        private createdAt: string
+        private created_at: string
     ){}
 
     public getId():string{
@@ -47,7 +47,7 @@ public setRole(newRole: ENUM): void {
 }
 
 public getCreatedAt(): string {
-    return this.createdAt
+    return this.created_at
 }
 
 
