@@ -178,7 +178,7 @@ app.get('/ping', (req: Request, res: Response) => {
 
 // ***** POSTS *****
 
-// createPost
+// getPosts
 
 app.get("/posts", async (req: Request, res: Response) => {
   try {
