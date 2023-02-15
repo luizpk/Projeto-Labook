@@ -33,7 +33,7 @@ export class PostDatabase extends BaseDatabase {
     }
 
 
-    public async findUserById(creatorId: string | undefined): Promise<PostsDB | undefined> {
+    public async findCreatorById(creatorId: string | undefined): Promise<PostsDB | undefined> {
         const [userDBExists]: PostsDB[] | undefined[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POST)
             .where({ id: creatorId })

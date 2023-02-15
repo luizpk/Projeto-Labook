@@ -70,7 +70,8 @@ public CreatePost =  async (req: Request, res: Response) => {
             throw new Error("'dislikes' deve ser um bolean")
         }
   
-        const postExists= await PostDatabase.findPostById(id)
+        const postDB = new PostDatabase()
+        const postExists= await postDB.findPostById(id)
   
         if (postExists) {
             res.status(400)
@@ -97,10 +98,10 @@ public CreatePost =  async (req: Request, res: Response) => {
             updated_at: newPost.getUpdated_at()
         }
   
-        const userDatabase = new PostDatabase()
-        const userDBExist = await userDatabase.findUserById(creator_id)
+        const postDatabase = new PostDatabase()
+        const postDBExist = await postDatabase.findCreatorById(creator_id)
   
-        PostDatabase.insertPost(newPostDB) //**** */
+        postDatabase.insertPost(newPostDB)
   
               res.status(201).send(newPost)
     } catch (error) {
