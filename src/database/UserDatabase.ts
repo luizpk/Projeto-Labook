@@ -1,5 +1,5 @@
 import { BaseDatabase } from "./BaseDatabase";
-import { TUsersDB } from "../types";
+import { UsersDB } from "../types";
 
 export class UserDatabase extends BaseDatabase{
     //atributos
@@ -7,29 +7,29 @@ export class UserDatabase extends BaseDatabase{
 
 
     //metodos
-    public async findUsers(q: string | undefined): Promise<TUsersDB[]>{
+    public async findUsers(q: string | undefined): Promise<UsersDB[]>{
         let usersDB
         if (q) {
-            const result: TUsersDB[] = await BaseDatabase
+            const result: UsersDB[] = await BaseDatabase
                 .connection(UserDatabase.TABLE_USERS)
-                .where("id","name", "LIKE", `%${q}%`)
+                .where("name", "LIKE", `%${q}%`)
             usersDB = result
         } else {
-            const result: TUsersDB[] = await BaseDatabase
+            const result: UsersDB[] = await BaseDatabase
                 .connection(UserDatabase.TABLE_USERS)
             usersDB = result
         }
         return usersDB
     }
 
-    public async findUserById(id : string | undefined): Promise <TUsersDB | undefined>{
-        const [ userDBExists ]: TUsersDB[] | undefined[] = await BaseDatabase
+    public async findUserById(id : string | undefined): Promise <UsersDB | undefined>{
+        const [ userDBExists ]: UsersDB[] | undefined[] = await BaseDatabase
             .connection(UserDatabase.TABLE_USERS)
             .where({ id })
         return userDBExists
     }
 
-    public async insertUser(newUserDB: TUsersDB ): Promise<void>{
+    public async insertUser(newUserDB: UsersDB ): Promise<void>{
         await BaseDatabase
             .connection(UserDatabase.TABLE_USERS)
             .insert(newUserDB)
@@ -43,7 +43,7 @@ export class UserDatabase extends BaseDatabase{
         .where({ id })
     }
 
-    public async editUser(editUserDB: TUsersDB, id: string): Promise<void> {
+    public async editUser(editUserDB: UsersDB, id: string): Promise<void> {
         await BaseDatabase
             .connection(UserDatabase.TABLE_USERS)
             .update(editUserDB)

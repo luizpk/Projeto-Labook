@@ -1,6 +1,6 @@
 
 
-export type TUsersDB = {
+export type UsersDB = {
     id: string,
     name: string,
     email: string,
@@ -9,7 +9,7 @@ export type TUsersDB = {
     created_at: string
 }
 
-export type TPostsDB = {
+export type PostsDB = {
     id: string,
     creator_id: string,
     content: string,
