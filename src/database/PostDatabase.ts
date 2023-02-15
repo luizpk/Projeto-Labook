@@ -1,4 +1,4 @@
-import { TPostsDB, EditedPost } from "../types";
+import { PostsDB, EditedPost } from "../types";
 import { BaseDatabase } from "./BaseDatabase";
 
 
@@ -8,16 +8,16 @@ export class PostDatabase extends BaseDatabase {
     public static TABLE_POST = "posts"
 
 
-    public async findPosts(q: string | undefined): Promise<TPostsDB[]> {
+    public async findPosts(q: string | undefined): Promise<PostsDB[]> {
         let postsDB
 
         if (q) {
-            const result: TPostsDB[] = await BaseDatabase
+            const result: PostsDB[] = await BaseDatabase
                 .connection(PostDatabase.TABLE_POST)
                 .where("content", "LIKE", `%${q}%`)
             postsDB = result
         } else {
-            const result: TPostsDB[] = await BaseDatabase
+            const result: PostsDB[] = await BaseDatabase
                 .connection(PostDatabase.TABLE_POST)
             postsDB = result
         }
@@ -25,23 +25,23 @@ export class PostDatabase extends BaseDatabase {
     }
 
 
-    public async findPostById(id: string | undefined): Promise<TPostsDB | undefined> {
-        const [postDBExists]: TPostsDB[] | undefined[] = await BaseDatabase
+    public async findPostById(id: string | undefined): Promise<PostsDB | undefined> {
+        const [postDBExists]: PostsDB[] | undefined[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POST)
             .where({ id })
         return postDBExists
     }
 
 
-    public async findUserById(creatorId: string | undefined): Promise<TPostsDB | undefined> {
-        const [userDBExists]: TPostsDB[] | undefined[] = await BaseDatabase
+    public async findUserById(creatorId: string | undefined): Promise<PostsDB | undefined> {
+        const [userDBExists]: PostsDB[] | undefined[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POST)
             .where({ id: creatorId })
         return userDBExists
     }
 
 
-    public async insertPost(newPostDB: TPostsDB): Promise<void> {
+    public async insertPost(newPostDB: PostsDB): Promise<void> {
         await BaseDatabase
             .connection(PostDatabase.TABLE_POST)
             .insert(newPostDB)

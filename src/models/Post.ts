@@ -55,7 +55,7 @@ export class Post {
 
 
 
-    public getUpdated_at(): string {
+    public getUpdated_at_at(): string {
         return this.updated_at
     }
     public setUpdated_at(newUpdatedAt: string): void {
