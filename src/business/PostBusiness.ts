@@ -1,6 +1,8 @@
 import { PostDatabase } from "../database/PostDatabase"
 import { Post } from "../models/Post"
 import { EditedPost } from "../types"
+import { BadRequestError } from "../errors/BadRequestErrors"
+import { NotFoundError } from "../errors/NotFoundErrors"
 
 
 export class PostBusiness{
@@ -34,27 +36,27 @@ export class PostBusiness{
   
         if (typeof id !== "string") {
             
-            throw new Error("'id' deve ser uma string")
+            throw new BadRequestError("'id' deve ser uma string")
         }
   
         if (typeof creator_id !== "string") {
             
-            throw new Error("'creator_id' deve ser uma string")
+            throw new BadRequestError("'creator_id' deve ser uma string")
         }
   
         if (typeof content !== "string") {
             
-            throw new Error("'content' deve ser uma string")
+            throw new BadRequestError("'content' deve ser uma string")
         }
   
         if (typeof likes !== "boolean") {
             
-            throw new Error("'likes' deve ser um bolean")
+            throw new BadRequestError("'likes' deve ser um bolean")
         }
   
         if (typeof dislikes !== "boolean") {
             
-            throw new Error("'dislikes' deve ser um bolean")
+            throw new BadRequestError("'dislikes' deve ser um bolean")
         }
   
         const postDB = new PostDatabase()
@@ -62,7 +64,7 @@ export class PostBusiness{
   
         if (postExists) {
             
-            throw new Error("Post com id já existente")
+            throw new BadRequestError("Post com id já existente")
         }
   
         const newPost = new Post(
@@ -117,13 +119,13 @@ export class PostBusiness{
       if (content !== undefined) {
           if (typeof content !== "string") {
               
-              throw new Error("'content' deve ser uma string");
+              throw new BadRequestError("'content' deve ser uma string");
           }
       }
   
       if (!postDBExist) {
         
-        throw new Error("post não encontrado")
+        throw new NotFoundError("post não encontrado")
     }
         
      
@@ -161,7 +163,7 @@ export class PostBusiness{
         const postDBExists = await postDatabase.findPostById(idToDelete)
 
         if (!postDBExists) {
-            throw new Error("post não encontrado")
+            throw new NotFoundError("post não encontrado")
         }
         await postDatabase.deletePost(idToDelete)
 

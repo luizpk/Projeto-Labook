@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { UserBusiness } from "../business/UserBusiness"
 import { BaseDatabase } from "../database/BaseDatabase"
 import { UserDatabase } from "../database/UserDatabase"
+import { BaseError } from "../errors/BaseErrors"
 import { User } from "../models/User" 
 import { UsersDB, ENUM } from "../types"
 
@@ -23,7 +24,7 @@ export class UserController {
           res.status(500)
       }
 
-      if (error instanceof Error) {
+      if (error instanceof BaseError) {
           res.send(error.message)
       } else {
           res.send("Erro inesperado")
