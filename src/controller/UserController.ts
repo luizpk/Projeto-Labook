@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import { UserBusiness } from "../business/UserBusiness"
 import { BaseDatabase } from "../database/BaseDatabase"
 import { UserDatabase } from "../database/UserDatabase"
 import { User } from "../models/User" 
@@ -10,8 +11,10 @@ export class UserController {
     try {
         const input = {q: req.query.q}
 
-        const outPut = await this.userBusinnes.getUser(input)
-
+        const userBusinnes = new UserBusiness()
+        const outPut = await userBusinnes.getUser(input)
+        
+        
         res.status(200).send(outPut)
     } catch (error) {
       console.log(error)
@@ -31,7 +34,7 @@ export class UserController {
 
 
     
-    public signUpUsers = async (req: Request, res: Response) => {
+    public signUpUser = async (req: Request, res: Response) => {
         try{
 
             

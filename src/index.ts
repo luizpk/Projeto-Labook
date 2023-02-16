@@ -1,9 +1,8 @@
 
 import express, {Request, Response} from 'express';
 import cors from 'cors';
-import { PostController } from './controller/PostController';
-import { UserController } from './controller/UserController';
-import { UserDatabase } from './database/UserDatabase';
+import { userRouter } from './router/UserRouter';
+import { postRouter } from './router/Postrouter';
 
 
 
@@ -35,21 +34,7 @@ app.get('/ping', (req: Request, res: Response) => {
 }
   });
 
+  app.use("/users", userRouter)
+  app.use("/posts", postRouter)
 
-
-
-// ***** USERS *****
-
-
-const userController = new UserController()
-
-app.post("/users", userController.signUpUsers)
-
-// ***** POSTS *****
-
-const postController = new PostController()
-
-app.get("/posts", postController.getPosts)
-app.post("/posts", postController.CreatePost)
-app.put("/posts/:id", postController.editPost)
-app.delete("/posts/:id", postController.deletePost) 
+  
