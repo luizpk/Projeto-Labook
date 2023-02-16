@@ -1,5 +1,7 @@
 import { UserDatabase } from "../database/UserDatabase"
 import { User } from "../models/User"
+import { BadRequestError } from "../errors/BadRequestErrors"
+import { NotFoundError } from "../errors/NotFoundErrors"
 
 
 
@@ -56,12 +58,12 @@ public signInUser = async() =>{
                 
                 if (typeof id !== "string") {
                  
-                  throw new Error("'id' deve ser uma string");
+                  throw new BadRequestError("'id' deve ser uma string");
                 }
             
                 if (id[0] !== "u") {
                   
-                  throw new Error("'id' deve iniciar com a letra 'u'");
+                  throw new BadRequestError("'id' deve iniciar com a letra 'u'");
                 }
           
                          
@@ -73,18 +75,18 @@ public signInUser = async() =>{
           
               if (userDBExists) {
                 
-                throw new Error("'id' já existente")
+                throw new BadRequestError("'id' já existente")
               }
                  
               if (typeof email !== "string") {
                
-                throw new Error("Digite um email válido")
+                throw new BadRequestError("Digite um email válido")
               }
           
               
                if (!email.match(regexEmail)) {
                  
-                 throw new Error(
+                 throw new BadRequestError(
                    "Digite um email válido."
                  );
               }
@@ -93,22 +95,22 @@ public signInUser = async() =>{
           
                 if (emailExists) {
                  
-                  throw new Error("'email' já cadastrado");
+                  throw new BadRequestError("'email' já cadastrado");
                 }
               
               if (typeof name !== "string") {
                 
-                throw new Error("'nome' deve ser uma string");
+                throw new BadRequestError("'nome' deve ser uma string");
               }
               
               if (typeof password !== "string") {
                 
-                throw new Error("'password' deve ser uma string")
+                throw new BadRequestError("'password' deve ser uma string")
               }
           
               if (!password.match(regexPassword)) {
                
-                throw new Error("'password' deve possuir entre 8 e 12 caracteres, com letras maiúsculas e minúsculas e no mínimo um número e um caractere especial")
+                throw new BadRequestError("'password' deve possuir entre 8 e 12 caracteres, com letras maiúsculas e minúsculas e no mínimo um número e um caractere especial")
               }
               
               userDatabase.insertUser(newUserDB)

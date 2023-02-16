@@ -3,6 +3,7 @@ import { PostBusiness } from "../business/PostBusiness"
 import { PostDatabase } from "../database/PostDatabase"
 import { Post } from "../models/Post"
 import { EditedPost, PostsDB } from "../types"
+import { BaseError } from "../errors/BaseErrors"
 
 
 export class PostController {
@@ -23,7 +24,7 @@ export class PostController {
                 res.status(500)
             }
     
-            if (error instanceof Error) {
+            if (error instanceof BaseError) {
                 res.send(error.message)
             } else {
                 res.send("Erro inesperado")
@@ -57,7 +58,7 @@ public CreatePost =  async (req: Request, res: Response) => {
             res.status(500)
         }
   
-        if (error instanceof Error) {
+        if (error instanceof BaseError) {
             res.send(error.message)
         } else {
             res.send("Erro inesperado")
@@ -92,7 +93,7 @@ public CreatePost =  async (req: Request, res: Response) => {
         res.status(500)
     }
   
-    if (error instanceof Error) {
+    if (error instanceof BaseError) {
         res.send(error.message)
     } else {
         res.send("Erro inesperado")
@@ -120,7 +121,7 @@ public CreatePost =  async (req: Request, res: Response) => {
             res.status(500)
         }
   
-        if (error instanceof Error) {
+        if (error instanceof BaseError) {
             res.send(error.message)
         } else {
             res.send("Erro inesperado")
