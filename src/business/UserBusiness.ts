@@ -1,40 +1,32 @@
-import { Request, Response } from "express"
-import { BaseDatabase } from "../database/BaseDatabase"
 import { UserDatabase } from "../database/UserDatabase"
-import { User } from "../models/User" 
-import { UsersDB, ENUM } from "../types"
-
-export class UserController {
-
-  public getUsers = async (req: Request, res: Response) => {
-    try {
-        const input = {q: req.query.q}
-
-        const outPut = await this.userBusinnes.getUser(input)
-
-        res.status(200).send(outPut)
-    } catch (error) {
-      console.log(error)
-
-      if (req.statusCode === 200) {
-          res.status(500)
-      }
-
-      if (error instanceof Error) {
-          res.send(error.message)
-      } else {
-          res.send("Erro inesperado")
-      }
-  }
-}
+import { User } from "../models/User"
 
 
 
-    
-    public signUpUsers = async (req: Request, res: Response) => {
-        try{
+export class UserBusiness {
 
-            const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    public getUser = async (q: any) => {
+        
+        const userDatabase = new UserDatabase();
+        const usersDB = await userDatabase.findUsers(q)
+
+        const users: User[] = usersDB.map((userDB) => new User(
+            userDB.id,
+            userDB.name,
+            userDB.email,
+            userDB.password,
+            userDB.role,
+            userDB.created_at
+        ))
+        return ({users: users})
+    }
+
+
+
+
+public signInUser = async() =>{
+
+ const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
           
             const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,12}$/g;
                      
@@ -63,12 +55,12 @@ export class UserController {
 
                 
                 if (typeof id !== "string") {
-                  res.status(400)
+                 
                   throw new Error("'id' deve ser uma string");
                 }
             
                 if (id[0] !== "u") {
-                  res.status(400)
+                  
                   throw new Error("'id' deve iniciar com a letra 'u'");
                 }
           
@@ -80,18 +72,18 @@ export class UserController {
                   const userDBExists = await userDatabase.findUserById(id)
           
               if (userDBExists) {
-                res.status(400)
+                
                 throw new Error("'id' já existente")
               }
                  
               if (typeof email !== "string") {
-                res.status(400)
+               
                 throw new Error("Digite um email válido")
               }
           
               
                if (!email.match(regexEmail)) {
-                 res.status(400);
+                 
                  throw new Error(
                    "Digite um email válido."
                  );
@@ -100,37 +92,32 @@ export class UserController {
               const emailExists = await userDatabase.findUserById(email)
           
                 if (emailExists) {
-                  res.status(400);
+                 
                   throw new Error("'email' já cadastrado");
                 }
               
               if (typeof name !== "string") {
-                res.status(400);
+                
                 throw new Error("'nome' deve ser uma string");
               }
               
               if (typeof password !== "string") {
-                res.status(400)
+                
                 throw new Error("'password' deve ser uma string")
               }
           
               if (!password.match(regexPassword)) {
-                res.status(400)
+               
                 throw new Error("'password' deve possuir entre 8 e 12 caracteres, com letras maiúsculas e minúsculas e no mínimo um número e um caractere especial")
               }
               
               userDatabase.insertUser(newUserDB)
           
-                res.status(201).send('Usuário registrado com sucesso')
-              }catch (error:any){
-                  console.log(error)
-          
-                  if (res.statusCode === 200){
-                      res.status(500)
-                  }
-          
-                  res.send(error.message)
-              }
             }
 
+
+
 }
+
+
+
