@@ -25,9 +25,18 @@ export interface CreatedPostOutputDTO{
 
 }
 
-export interface EditedPostInputDTO {
+export interface EditPostInputDTO {
     idToEdit: string,
-    content: string,
+    content: string | undefined,
+    
+}
+
+export interface EditPostOutputDTO {
+    message: string,
+    post: {
+        id: string,
+        content: string,
+    }
 }
 
 
@@ -98,15 +107,42 @@ export class PostDTO {
     }
 
 
+    public editPostInput(
+        idToEdit: string,
+        content: unknown
+    ){
+                
+        if(content !== undefined) {
+            if (typeof content !== "string") {
+                throw new BadRequestError("'content' deve ser string");
+            }
+        }
+           
+        const dto: EditPostInputDTO = {
+            idToEdit,
+            content
+            
+        }
 
-
-
-
-
-
-
-    public editedPostInput(){
-
+        return dto
     }
 
+    public editPostOutput(post: Post): EditPostOutputDTO {
+        const dto: EditPostOutputDTO = {
+            message: "Post editado com sucesso",
+            post:{
+
+                id: post.getId(),
+                creator_id: post.getCreator_id(), 
+                content: post.getContent(),
+                likes: post.getLikes(),
+                dislikes: post.getDislikes(),
+                created_at: post.getCreated_at(),
+                updated_at: post.getUpdated_at()
+    
+                }
+        }
+
+        return dto
+    }
 }

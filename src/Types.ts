@@ -27,6 +27,5 @@ export type ENUM = {
 
 export interface EditedPost {
     content: string,
-    likes: boolean,
-    dislikes: boolean
+    updated_at: string
 }

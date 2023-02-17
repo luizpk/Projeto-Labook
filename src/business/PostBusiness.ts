@@ -3,8 +3,9 @@ import { Post } from "../models/Post"
 import { EditedPost } from "../types"
 import { BadRequestError } from "../errors/BadRequestErrors"
 import { NotFoundError } from "../errors/NotFoundErrors"
-import { CreatedPostInputDTO } from "../dtos/PostDTO"
+import { CreatedPostInputDTO, PostDTO } from "../dtos/PostDTO"
 
+const date = new Date().toISOString()
 
 export class PostBusiness{
     
@@ -42,6 +43,8 @@ export class PostBusiness{
             
             throw new BadRequestError("Post com id já existente")
         }
+
+         
   
         const newPost = new Post(
             id,
@@ -49,8 +52,8 @@ export class PostBusiness{
             content,
             likes,
             dislikes,
-            new Date().toISOString(),
-            new Date().toISOString()
+            date,
+            date
         )
   
         const newPostDB = {
@@ -77,56 +80,42 @@ export class PostBusiness{
 
     public editPost = async(input:any) => {
 
-
-          
         const { idPostEdit, content,} = input
-  
+    
         const postDatabase = new PostDatabase()
-  
-        if (idPostEdit[0] !== "p") {
-          
-          throw new Error("'id' deve iniciar com a letra 'p'");
-      }
-  
-      const postDBExist = await postDatabase.findPostById(idPostEdit)
-  
-      
-  
-      if (content !== undefined) {
-          if (typeof content !== "string") {
-              
-              throw new BadRequestError("'content' deve ser uma string");
-          }
-      }
-  
-      if (!postDBExist) {
-        
-        throw new NotFoundError("post não encontrado")
-    }
-        
-     
-      const updatedPost = new Post(
-          postDBExist.id,
-          postDBExist.creator_id,
-          postDBExist.content,
-          postDBExist.likes,
-          postDBExist.dislikes,
-          postDBExist.created_at,
-          new Date().toISOString()
-      )
-  
-      const newPostDB: EditedPost = {
-          content: updatedPost.getContent(),
-          likes: updatedPost.getLikes(),
-          dislikes: updatedPost.getDislikes()
-      }
-  
-      postDatabase.editPost(newPostDB, idPostEdit)
+        const postExists= await postDatabase.findPostById(idPostEdit)
 
-      const outPut = {
-        message: "Post atualizado com sucesso",
-        post: updatedPost
-    }
+        if (!postExists) {
+            throw new BadRequestError("Post nao encontrado");
+
+        }
+
+        const postEdit = new Post(
+            postExists.id,
+            postExists.creator_id,
+            postExists.content,
+            postExists.likes,
+            postExists.dislikes,
+            postExists.created_at,
+            postExists.updated_at
+        )
+        
+        postEdit.setContent(content)
+        postEdit.setUpdated_at(date)
+        const postEditedDB: EditedPost = {
+            content: postEdit.getContent(),
+            updated_at: date
+
+        }
+        await postDatabase.editPost(postEditedDB, idPostEdit)
+
+        
+
+        const outPut = {
+            message: "Post atualizado com sucesso",
+            post: postEdit
+        }
+
 
     return outPut
     }
