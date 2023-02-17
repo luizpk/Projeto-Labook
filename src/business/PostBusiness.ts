@@ -3,6 +3,7 @@ import { Post } from "../models/Post"
 import { EditedPost } from "../types"
 import { BadRequestError } from "../errors/BadRequestErrors"
 import { NotFoundError } from "../errors/NotFoundErrors"
+import { CreatedPostInputDTO } from "../dtos/PostDTO"
 
 
 export class PostBusiness{
@@ -30,12 +31,10 @@ export class PostBusiness{
 
     // ***** CREATE POST *****
 
-    public createPost = async(input:any) => {
+    public createPost = async(input:CreatedPostInputDTO) => {
 
         const { id, creator_id, content, likes, dislikes } = input
-  
-       
-  
+    
         const postDB = new PostDatabase()
         const postExists= await postDB.findPostById(id)
   

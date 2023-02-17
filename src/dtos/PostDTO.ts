@@ -1,4 +1,5 @@
 import { BadRequestError } from "../errors/BadRequestErrors"
+import { Post } from "../models/Post"
 
 export interface CreatedPostInputDTO {
     id:string,
@@ -6,6 +7,27 @@ export interface CreatedPostInputDTO {
     content: string, 
     likes: boolean, 
     dislikes: boolean
+}
+
+export interface CreatedPostOutputDTO{
+
+    message:string,
+    post: {
+
+        id: string,
+        creator_id: string,
+        content: string,
+        likes: boolean,
+        dislikes: boolean,
+        created_at: string,
+        updated_at: string
+    }
+
+}
+
+export interface EditedPostInputDTO {
+    idToEdit: string,
+    content: string,
 }
 
 
@@ -58,5 +80,33 @@ export class PostDTO {
         return dto
     }
 
+    public createdPostOutput(post:Post){
+        const dto: CreatedPostOutputDTO = {
+            message: "Post registrado com sucesso.",
+            post:{
+
+            id: post.getId(),
+            creator_id: post.getCreator_id(), 
+            content: post.getContent(),
+            likes: post.getLikes(),
+            dislikes: post.getDislikes(),
+            created_at: post.getCreated_at(),
+            updated_at: post.getUpdated_at()
+
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public editedPostInput(){
+
+    }
 
 }
